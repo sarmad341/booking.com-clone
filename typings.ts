@@ -4,7 +4,7 @@ export type Listing = {
   rating: string | null;
   description: string;
   price: string;
-  link: string;
+  link: string | null;
   booking_metadata: string;
   rating_word: string;
   rating_count: string | null;

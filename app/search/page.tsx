@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 type Props = {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 };
 
 export type SearchParams = {
@@ -16,7 +16,9 @@ export type SearchParams = {
 };
 
 async function SearchPage({ searchParams }: Props) {
-  if (!searchParams.url) return notFound();
+  const params = await searchParams;
+  
+  if (!params.url) return notFound();
 
   const results = await fetchResults(searchParams);
 
@@ -30,7 +32,7 @@ async function SearchPage({ searchParams }: Props) {
         <h2 className="pb-3">
           Dates of trip:
           <span className="italic ml-2">
-            {searchParams.checkin} to {searchParams.checkout}
+            {params.checkin} to {params.checkout}
           </span>
         </h2>
 
@@ -54,12 +56,18 @@ async function SearchPage({ searchParams }: Props) {
 
               <div className="flex flex-1 space-x-5 justify-between">
                 <div>
-                  <Link
-                    href={item.link}
-                    className="font-bold text-blue-500 hover:text-blue-600 hover:underline"
-                  >
-                    {item.title}
-                  </Link>
+                  {item.link ? (
+                    <Link
+                      href={item.link}
+                      className="font-bold text-blue-500 hover:text-blue-600 hover:underline"
+                    >
+                      {item.title}
+                    </Link>
+                  ) : (
+                    <span className="font-bold text-gray-500">
+                      {item.title}
+                    </span>
+                  )}
                   <p className="text-xs">{item.description}</p>
                 </div>
 
